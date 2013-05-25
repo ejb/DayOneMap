@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Journal Entries</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
+    <![endif]-->
+
+    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+    <meta charset="UTF-8" />
+    
+    <style>
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    html, body, #map {
+        height: 100%;
+    }
+    
+    </style>
+    
+</head>
+<body>
+<script>
+var journal = [
+{% for entry in journal %}{% if 'Latitude' in entry %}
+  {
+  "date" : "{{ entry['Date'].strftime('%A, %b %e, %Y') }}",  
+  "place" : "{{ entry['Place Name'] }}, {{ entry['Locality'] }}",
+  "photo" : "{{ entry['Photo']  }}",
+  "latitude" : {{ entry['Latitude'] }},
+  "longitude" : {{ entry['Longitude'] }}
+},
+{% endif %}{% endfor %}
+];
+
+// document.write(journal[15]['place']);
+</script>
+
+<div id="map" class="map" style=""></div>
+
+
+<script>
+// create a map in the "map" div, set the view to a given place and zoom
+var map = L.map('map').setView([51.505, -0.09], 13);
+
+// add an OpenStreetMap tile layer
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+for (var i=0;i<journal.length;i++) {
+    var lat = journal[i]['latitude'];
+    var lon = journal[i]['longitude'];
+    var placeName = journal[i]['place'];
+    // add a marker in the given location
+    L.marker( [ lat, lon ] ).addTo(map)
+        .bindPopup(placeName);
+    
+}
+</script>
+
+</body>
+</html>
