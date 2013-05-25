@@ -55,10 +55,23 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 for (var i=0;i<journal.length;i++) {
     var lat = journal[i]['latitude'];
     var lon = journal[i]['longitude'];
-    var placeName = journal[i]['place'];
-    // add a marker in the given location
-    L.marker( [ lat, lon ] ).addTo(map)
-        .bindPopup(placeName);
+    var placeName = journal[i]['place']+"<br><img src='"+journal[i]['photo']+"' style = 'width: 200px;'>";
+    
+    if (journal[i]['photo']) {
+        var myIcon = L.divIcon({
+            className: 'my-div-icon',
+            html: "<img src='"+journal[i]['photo']+"' style = 'width: 100%; position: absolute; bottom: 0;'>",
+            iconSize: [50, 50]
+        });
+        // add a marker in the given location
+        L.marker( [ lat, lon ], {icon: myIcon} ).addTo(map)
+            .bindPopup(placeName);        
+    } else {
+        L.marker( [ lat, lon ] ).addTo(map)
+            .bindPopup(placeName);        
+    }
+    
+    
     
 }
 </script>
